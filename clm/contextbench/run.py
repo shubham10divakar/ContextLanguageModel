@@ -82,7 +82,7 @@ def main(argv=None):
                 print(json.dumps(rec))
             mean = sum(accs) / len(accs)
             se = math.sqrt(sum((a - mean) ** 2 for a in accs) / (len(accs) - 1) / len(accs)) if len(accs) > 1 else 0
-            print(f"## {t} level={level} pressure={records[-1]['pressure']}x acc={mean:.3f} ± {se:.3f}")
+            print(f"## {t} level={level} pressure={records[-1]['pressure']}x acc={mean:.3f} +/- {se:.3f}")
     args.out.mkdir(parents=True, exist_ok=True)
     with open(args.out / "summary.jsonl", "a", encoding="utf-8") as f:
         for r in records:
