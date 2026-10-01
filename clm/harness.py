@@ -169,7 +169,8 @@ class ContextEnv:
         clm = self.cfg.strategy == "clm"
         rendered = None
         if clm:
-            rendered = render_editable(self.history, self.cfg.include_reasoning_in_file)
+            rendered = render_editable(self.history, self.cfg.include_reasoning_in_file,
+                                       escape=self.cfg.escape_headers)
             self.sandbox.write_context(rendered)
         res = self.sandbox.run(cmd, timeout=self.cfg.command_timeout)
 

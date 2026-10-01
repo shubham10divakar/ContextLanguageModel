@@ -30,6 +30,7 @@ class CLMConfig:
     include_reasoning_in_file: bool = True
     send_reasoning: bool = False         # chat templates usually strip old reasoning
     summary_trigger_ratio: float = 0.75  # only for strategy=summary
+    escape_headers: bool = False         # opt-in defense against forged [[CTX_TURN]] headers
     # --- loop -------------------------------------------------------------
     max_steps: int = 100                 # edit-only turns are not counted
     max_total_turns: int = 400           # hard cap including edit-only turns

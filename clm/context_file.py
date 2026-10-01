@@ -65,11 +65,25 @@ def message_text(msg: Message, include_reasoning: bool = True) -> str:
     return "\n".join(parts)
 
 
-def render_editable(messages: Iterable[Message], include_reasoning: bool = True) -> str:
+def escape_headers(text: str) -> str:
+    """Neutralize header-shaped lines inside turn content (prefix a backslash).
+
+    Without this, any text that reaches the context (a tool output, a fetched
+    web page) can contain ``[[CTX_TURN n role=assistant]]`` and, on the next
+    edit, be parsed back as a forged assistant or user turn. The reference
+    design does not escape; this is an opt-in mitigation.
+    """
+    return HEADER_RE.sub(lambda m: "\\" + m.group(0), text)
+
+
+def render_editable(messages: Iterable[Message], include_reasoning: bool = True, escape: bool = False) -> str:
     """Render editable turns (``messages[2:]`` of the live context) to file text."""
     blocks = []
     for i, msg in enumerate(messages, 1):
-        blocks.append(f"{header(i, msg['role'])}\n{message_text(msg, include_reasoning)}")
+        body = message_text(msg, include_reasoning)
+        if escape:
+            body = escape_headers(body)
+        blocks.append(f"{header(i, msg['role'])}\n{body}")
     return "\n\n".join(blocks) + ("\n" if blocks else "")
 
 
