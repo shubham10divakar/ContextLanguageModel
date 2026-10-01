@@ -40,7 +40,7 @@ def test_urgent_adaptive_uses_recent_outputs():
 def test_rollback_drops_newest_keeps_env_and_pairs():
     b = _ctl()
     protected = [{"role": "system", "content": "s"}, {"role": "user", "content": "t"}]
-    big = "word " * 300
+    big = "word " * 500
     hist = [
         {"role": "user", "content": "op1", "env": True},
         {"role": "assistant", "content": "", "tool_calls": [{"id": "a", "name": "bash", "arguments": '{"command": "cat a"}'}]},
