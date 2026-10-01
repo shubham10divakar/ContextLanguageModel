@@ -107,9 +107,20 @@ class ContextEnv:
         return self.counter.count(self.messages())
 
     def context_text(self) -> str:
-        """Everything the model will see next turn, as plain text (used by graders)."""
-        return "\n\n".join((m.get("content") or "") + "".join(
-            "\n" + c.get("arguments", "") for c in m.get("tool_calls") or []) for m in self.messages())
+        """Everything the model will see next turn, as plain text (used by graders).
+
+        Tool-call commands are decoded from their JSON arguments so text the
+        model wrote inside a command counts the same as text in its message.
+        """
+        parts = []
+        for m in self.messages():
+            parts.append(m.get("content") or "")
+            for c in m.get("tool_calls") or []:
+                try:
+                    parts.append(json.loads(c.get("arguments") or "{}").get("command", ""))
+                except (json.JSONDecodeError, AttributeError):
+                    parts.append(str(c.get("arguments", "")))
+        return "\n\n".join(parts)
 
     def push_user(self, text: str, env: bool = False) -> None:
         if self.history and self.history[-1]["role"] == "user":
