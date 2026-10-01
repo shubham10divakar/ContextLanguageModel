@@ -72,6 +72,7 @@ class StreamTask(Task):
         self.idx = 0
         self.finished = False
         self.op_scores: dict[int, float] = {}
+        self.last_context: str = ""   # context when the agent last acknowledged an operation
 
     # -- subclass API ---------------------------------------------------------
     def generate(self) -> list[Op]:
@@ -110,7 +111,9 @@ class StreamTask(Task):
     def on_turn(self, env, command, result) -> list[str]:
         if self.finished or READY not in result.stdout:
             return []
-        score = self.score_op(self.idx, env.context_text())
+        context = env.context_text()
+        self.last_context = context
+        score = self.score_op(self.idx, context)
         if score is not None:
             self.op_scores[self.idx] = score
         self.idx += 1
@@ -123,7 +126,9 @@ class StreamTask(Task):
         return self.finished
 
     def grade(self, env) -> dict:
-        m = self.final_metrics(env.context_text())
+        # Final-context metrics read the context as of the last acknowledged operation, so an
+        # input pushed in right before an overflow does not count as retained.
+        m = self.final_metrics(self.last_context)
         m.update(task=self.name, seed=self.seed, ops_total=len(self.ops),
                  ops_completed=self.idx if not self.finished else len(self.ops))
         return m

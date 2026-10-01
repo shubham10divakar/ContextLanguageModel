@@ -63,3 +63,11 @@ def test_generators_are_deterministic():
     a, b = make_task("log_triage", 160, seed=5), make_task("log_triage", 160, seed=5)
     assert [o.body for o in a.ops] == [o.body for o in b.ops]
     assert len([o for o in a.ops if o.kind == "query"]) == 24
+
+
+def test_overflowed_input_is_not_credited(tmp_path):
+    # Base keeps everything; at ~1x pressure the last chunk lands in context right before the
+    # overflow and must not count as retained.
+    r = _run(make_task("needle_retention", 8, seed=0), keep_all_oracle("needle_retention"), tmp_path, "base")
+    assert r.status == "context_overflow"
+    assert 0.5 < r.grade["accuracy"] < 1.0
