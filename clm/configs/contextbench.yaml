@@ -1,0 +1,13 @@
+# ContextBench (Appendix D/E): 32,768-token limit with 2,048 reserved for the response.
+context_budget_tokens: 32768
+reserve_tokens: 2048
+max_tokens: 4096
+temperature: 0.7
+top_p: 0.95
+edit_gate: fit
+max_num_retry_on_limit: 6
+urgent_mode: ratio
+persistent_nudge_ratio: 0.9
+observation_max_chars: 20000
+max_steps: 2000
+max_total_turns: 4000

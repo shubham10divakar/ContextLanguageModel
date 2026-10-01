@@ -1,0 +1,11 @@
+# Long-horizon repository optimization (EdgeBench-style): many retries, no turn cap.
+context_budget_tokens: 32000
+reserve_tokens: 2048
+max_tokens: 8192
+temperature: 0.7
+top_p: 0.95
+edit_gate: fit
+max_num_retry_on_limit: 50
+urgent_mode: adaptive
+max_steps: 100000
+max_total_turns: 100000

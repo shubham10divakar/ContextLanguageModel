@@ -1,0 +1,12 @@
+# BrowseComp-Plus settings reported for the reference harness.
+context_budget_tokens: 28672
+reserve_tokens: 2048
+max_tokens: 4096
+temperature: 0.7
+top_p: 0.95
+edit_gate: shrink
+max_num_retry_on_limit: 6
+urgent_mode: ratio
+persistent_nudge_ratio: 0.9
+observation_max_chars: 60000
+max_steps: 100
